@@ -1,51 +1,50 @@
 package com.inventory.management;
 
+import com.inventory.management.domain.category.Category;
+import com.inventory.management.domain.inventory.InventoryService;
+import com.inventory.management.domain.product.Product;
 import com.inventory.management.domain.warehouse.City;
 import com.inventory.management.domain.warehouse.Region;
-import com.inventory.management.infra.secondary.category.CategoryEntity;
-import com.inventory.management.infra.secondary.category.CategoryRepository;
-import com.inventory.management.infra.secondary.product.ProductEntity;
-import com.inventory.management.infra.secondary.product.ProductRepository;
-import com.inventory.management.infra.secondary.warehouse.WarehouseEntity;
-import com.inventory.management.infra.secondary.warehouse.WarehouseRepository;
+import com.inventory.management.domain.warehouse.Warehouse;
+import com.inventory.management.infra.secondary.category.CategoryAdapter;
+import com.inventory.management.infra.secondary.product.ProductAdapter;
+import com.inventory.management.infra.secondary.warehouse.WarehouseAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.List;
-
 @SpringBootApplication
 @RequiredArgsConstructor
 public class InventoryManagementApplication implements ApplicationRunner {
-	private final WarehouseRepository warehouseRepository;
-	private final CategoryRepository categoryRepository;
-	private final ProductRepository productRepository;
+    private final WarehouseAdapter warehouseAdapter;
+    private final CategoryAdapter categoryAdapter;
+    private final ProductAdapter productAdapter;
+    private final InventoryService inventoryService;
 
-	public static void main(String[] args) {
-		SpringApplication.run(InventoryManagementApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(InventoryManagementApplication.class, args);
+    }
 
-	@Override
-	public void run(ApplicationArguments args) throws Exception {
-		WarehouseEntity mainWarehouse = new WarehouseEntity(null, "Main Warehouse", "Organize Sanayi Bölgesi", Region.IC_ANADOLU, City.ESKISEHIR);
-		WarehouseEntity secondWarehouse = new WarehouseEntity(null, "Second Warehouse", "Organize Sanayi Bölgesi", Region.MARMARA, City.ISTANBUL);
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        Warehouse mainWarehouse = warehouseAdapter.save(new Warehouse(null, "Main Warehouse", "Organize Sanayi Bölgesi", Region.IC_ANADOLU, City.ESKISEHIR));
+        Warehouse secondWarehouse = warehouseAdapter.save(new Warehouse(null, "Second Warehouse", "Organize Sanayi Bölgesi", Region.MARMARA, City.ISTANBUL));
 
-		warehouseRepository.saveAll(List.of(mainWarehouse, secondWarehouse));
+        Category artsCategory = categoryAdapter.save(new Category(null, "Arts"));
+        Category gamesCategory = categoryAdapter.save(new Category(null, "Games"));
+        Category kidsAndTeensCategory = categoryAdapter.save(new Category(null, "Kids & Teens"));
+        Category healthCategory = categoryAdapter.save(new Category(null, "Health"));
 
-		CategoryEntity artsCategoryEntity = new CategoryEntity(null, "Arts");
-		CategoryEntity gamesCategoryEntity = new CategoryEntity(null, "Games");
-		CategoryEntity kidsAndTeensCategoryEntity = new CategoryEntity(null, "Kids & Teens");
-		CategoryEntity healthCategoryEntity = new CategoryEntity(null, "Health");
+        Product artistPaintProduct = productAdapter.save(new Product(null, artsCategory, "Artist Paint", 5L));
+        Product canvasProduct = productAdapter.save(new Product(null, artsCategory, "Canvas", 10L));
+        Product gamingHeadsetProduct = productAdapter.save(new Product(null, gamesCategory, "Gaming Headset", 20L));
+        Product babyBodyOilProduct = productAdapter.save(new Product(null, kidsAndTeensCategory, "Baby Body Oil", 15L));
 
-		categoryRepository.saveAll(List.of(artsCategoryEntity, gamesCategoryEntity, kidsAndTeensCategoryEntity, healthCategoryEntity));
-
-		ProductEntity artistPaintProductEntity = new ProductEntity(null, artsCategoryEntity, "Artist Paint", 0L, 10L);
-		ProductEntity canvasProductEntity = new ProductEntity(null, artsCategoryEntity, "Canvas", 0L, 20L);
-		ProductEntity gamingHeadsetProductEntity = new ProductEntity(null, gamesCategoryEntity, "Gaming Headset", 0L, 50L);
-		ProductEntity babyBodyOilProductEntity = new ProductEntity(null, kidsAndTeensCategoryEntity, "Baby Body Oil", 0L, 100L);
-
-		productRepository.saveAll(List.of(artistPaintProductEntity, canvasProductEntity, gamingHeadsetProductEntity, babyBodyOilProductEntity));
-	}
+        inventoryService.add(new InventoryService.AddInventory(mainWarehouse, artistPaintProduct, 10));
+        inventoryService.subtract(new InventoryService.SubtractInventory(mainWarehouse, artistPaintProduct, 6));
+        inventoryService.edit(new InventoryService.EditInventory(mainWarehouse, artistPaintProduct, 5));
+        inventoryService.delete(new InventoryService.DeleteInventory(mainWarehouse, artistPaintProduct));
+    }
 }
