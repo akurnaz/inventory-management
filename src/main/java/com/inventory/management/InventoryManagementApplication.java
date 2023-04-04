@@ -46,5 +46,6 @@ public class InventoryManagementApplication implements ApplicationRunner {
         inventoryService.subtract(new InventoryService.SubtractInventory(mainWarehouse, artistPaintProduct, 6));
         inventoryService.edit(new InventoryService.EditInventory(mainWarehouse, artistPaintProduct, 5));
         inventoryService.delete(new InventoryService.DeleteInventory(mainWarehouse, artistPaintProduct));
+        inventoryService.add(new InventoryService.AddInventory(mainWarehouse, artistPaintProduct, 10));
     }
 }
