@@ -1,1 +1,23 @@
+server:
+  port: 8081
 
+spring:
+  application:
+    name: Inventory Management Application
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inventory-management
+    username: postgres
+    password: admin
+    initialization-mode: always
+    continue-on-error: false
