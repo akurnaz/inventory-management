@@ -7,5 +7,5 @@ public enum Region {
     MARMARA,
     IC_ANADOLU,
     DOGU_ANADOLU,
-    GÜNEYDOGU_ANADOLU;
+    GUNEYDOGU_ANADOLU;
 }

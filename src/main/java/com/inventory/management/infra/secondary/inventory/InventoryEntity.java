@@ -10,9 +10,12 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 @Entity(name = "Inventory")
 @Table(name = "inventory")
+@Audited
 @AllArgsConstructor
 @NoArgsConstructor
 public class InventoryEntity extends AbstractAuditingEntity {
@@ -21,10 +24,12 @@ public class InventoryEntity extends AbstractAuditingEntity {
     private Long id;
 
     @ManyToOne
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @NotNull
     private WarehouseEntity warehouse;
 
     @ManyToOne
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @NotNull
     private ProductEntity product;
 

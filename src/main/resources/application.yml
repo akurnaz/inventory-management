@@ -6,6 +6,10 @@ spring:
     name: Inventory Management Application
   jpa:
     properties:
+      org:
+        hibernate:
+          envers:
+            audit_table_suffix: _history
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: false
